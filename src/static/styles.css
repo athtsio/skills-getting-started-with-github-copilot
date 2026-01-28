@@ -163,7 +163,27 @@ footer {
   color: #333;
   font-size: 15px;
 }
-
+  /* Remove default list styling and style participant rows */
+  #participants {
+    margin: 0;
+    padding: 0;
+  }
+  .participant-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid #eee;
+  }
+  .delete-icon {
+    margin-left: 12px;
+    color: #d00;
+    font-size: 1.2em;
+    transition: color 0.2s;
+  }
+  .delete-icon:hover {
+    color: #a00;
+  }
 .participants-section.no-participants {
   background-color: #f9f9f9;
   color: #888;

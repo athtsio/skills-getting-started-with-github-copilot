@@ -26,9 +26,14 @@ document.addEventListener("DOMContentLoaded", () => {
           participantsSection = `
             <div class="participants-section">
               <strong>Participants:</strong>
-              <ul class="participants-list">
-                ${details.participants.map(email => `<li>${email}</li>`).join("")}
-              </ul>
+              <div id="participants-list-${name}" class="participants-list">
+                ${details.participants.map(email => `
+                  <div class="participant-row">
+                    <span>${email}</span>
+                    <span class="delete-icon" title="Unregister" style="cursor:pointer" onclick="unregisterParticipant('${name}', '${email}')">&#128465;</span>
+                  </div>
+                `).join("")}
+              </div>
             </div>
           `;
         } else {
@@ -82,6 +87,7 @@ document.addEventListener("DOMContentLoaded", () => {
         messageDiv.textContent = result.message;
         messageDiv.className = "success";
         signupForm.reset();
+        fetchActivities(); // Refresh activities to update participant list
       } else {
         messageDiv.textContent = result.detail || "An error occurred";
         messageDiv.className = "error";
@@ -100,6 +106,24 @@ document.addEventListener("DOMContentLoaded", () => {
       console.error("Error signing up:", error);
     }
   });
+
+  // Expose unregisterParticipant globally
+  window.unregisterParticipant = async function(activityName, email) {
+    try {
+      const response = await fetch(`/activities/${encodeURIComponent(activityName)}/unregister?email=${encodeURIComponent(email)}`, {
+        method: "POST"
+      });
+      if (response.ok) {
+        fetchActivities();
+      } else {
+        const result = await response.json();
+        alert(result.detail || "Failed to unregister participant.");
+      }
+    } catch (error) {
+      alert("Error unregistering participant.");
+      console.error(error);
+    }
+  };
 
   // Initialize app
   fetchActivities();
